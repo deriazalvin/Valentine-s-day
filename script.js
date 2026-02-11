@@ -40,6 +40,18 @@ Alvin 💖`;
     }
   }
 
+  function launchSparkles(count = 20){
+    for(let i=0;i<count;i++){
+      const sparkle = document.createElement('div');
+      sparkle.className = 'sparkle';
+      sparkle.style.left = Math.random()*100 + '%';
+      sparkle.style.top = Math.random()*80 + '%';
+      sparkle.style.animationDelay = Math.random()*1.5 + 's';
+      document.body.appendChild(sparkle);
+      setTimeout(()=> sparkle.remove(), 2000);
+    }
+  }
+
   function celebrate(){
     // Send form to Formspree
     fetch(form.action, {
@@ -51,18 +63,21 @@ Alvin 💖`;
     // Show envelope scene
     romanceScene.classList.add('show');
 
-    // Open envelope
-    setTimeout(()=> envelope.classList.add('open'), 1500);
-
-    // Type letter
-    setTimeout(()=> typeWriter(message), 3000);
-
     // Play music
     music.volume = 0.6;
     music.play().catch(err => console.log("Autoplay blocked", err));
 
     // Launch petals
     launchPetals(30);
+
+    // Small sparkles around
+    setInterval(()=> launchSparkles(5), 600);
+
+    // Open envelope
+    setTimeout(()=> envelope.classList.add('open'), 1500);
+
+    // Type letter
+    setTimeout(()=> typeWriter(message), 3000);
   }
 
   yes.addEventListener('click',(e)=>{
