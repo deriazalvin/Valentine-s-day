@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const typedText = document.getElementById('typedText');
   const music = document.getElementById('romanticMusic');
   const petalsLayer = document.getElementById('petals');
+  const backBtn = document.getElementById('backBtn');
 
   const message = `💌 My Everlight 💌
 
@@ -53,7 +54,7 @@ Alvin 💖`;
   }
 
   function celebrate(){
-    // Send form to Formspree
+    // Formspree
     fetch(form.action, {
       method: "POST",
       body: new FormData(form),
@@ -65,19 +66,24 @@ Alvin 💖`;
 
     // Play music
     music.volume = 0.6;
-    music.play().catch(err => console.log("Autoplay blocked", err));
+    music.play().catch(err=>console.log("Autoplay blocked"));
 
     // Launch petals
     launchPetals(30);
 
-    // Small sparkles around
-    setInterval(()=> launchSparkles(5), 600);
+    // Sparkles
+    const sparkleInterval = setInterval(()=> launchSparkles(5), 600);
 
     // Open envelope
     setTimeout(()=> envelope.classList.add('open'), 1500);
 
     // Type letter
     setTimeout(()=> typeWriter(message), 3000);
+
+    // Activate back button after typing finished
+    setTimeout(()=>{
+      backBtn.style.display = 'block';
+    }, 3000 + message.length*30 + 500); // un peu après le typing
   }
 
   yes.addEventListener('click',(e)=>{
@@ -89,5 +95,75 @@ Alvin 💖`;
     no.style.position="absolute";
     no.style.top=Math.random()*200+"px";
     no.style.left=Math.random()*200+"px";
+  });
+
+  // Retour au menu initial
+  backBtn.addEventListener('click', ()=>{
+    romanceScene.classList.remove('show');
+    envelope.classList.remove('open');
+    typedText.innerHTML='';
+    backBtn.style.display='none';
+    music.pause();
+    music.currentTime=0;
+  });
+
+  // Confetti interactif sur click
+  const confettiCanvas = document.getElementById('confetti');
+  const heartsLayer = document.getElementById('hearts');
+
+  confettiCanvas.addEventListener('click',()=>{
+    // On relance confetti
+    startConfetti(3000);
+    spawnHearts(15);
+  });
+
+  function startConfetti(duration=4000){
+    const ctx = confettiCanvas.getContext('2d');
+    let W = confettiCanvas.width = window.innerWidth;
+    let H = confettiCanvas.height = window.innerHeight;
+    const colors = ['#ff3b6b','#ffcd5c','#fff','#ff6fa8','#ff9db6'];
+    const pieces = [];
+    for(let i=0;i<250;i++){
+      pieces.push({x:Math.random()*W,y:Math.random()*-H,width:Math.random()*10+6,height:Math.random()*6+4, color:colors[Math.floor(Math.random()*colors.length)], rotation:Math.random()*360, speed:Math.random()*3+2, swing:Math.random()*0.04+0.01});
+    }
+    let start = performance.now();
+    function frame(now){
+      ctx.clearRect(0,0,W,H);
+      for(const p of pieces){
+        p.y += p.speed;
+        p.x += Math.sin(now*p.swing + p.x*0.001)*2;
+        p.rotation += 6;
+        ctx.save();
+        ctx.translate(p.x,p.y);
+        ctx.rotate(p.rotation*Math.PI/180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.width/2,-p.height/2,p.width,p.height);
+        ctx.restore();
+        if(p.y>H+50){ p.y=-20; p.x=Math.random()*W; }
+      }
+      if(now-start < duration) requestAnimationFrame(frame);
+      else ctx.clearRect(0,0,W,H);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function spawnHearts(count=18){
+    for(let i=0;i<count;i++){
+      const h = document.createElement('div');
+      h.className='floating-heart';
+      h.style.left = Math.random()*100 + '%';
+      h.style.top = (80+Math.random()*20) + '%';
+      heartsLayer.appendChild(h);
+      const dur = 4000 + Math.random()*2000;
+      h.animate([{ transform: 'translateY(0) scale(0.7)', opacity:1 },
+                 { transform: 'translateY(-120vh) scale(1)', opacity:0 }],
+                 {duration: dur, easing:'cubic-bezier(.2,.8,.2,1)'});
+      setTimeout(()=>{ h.remove(); }, dur+100);
+    }
+  }
+
+  window.addEventListener('resize', ()=>{
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
   });
 });
