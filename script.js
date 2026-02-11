@@ -5,8 +5,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const confettiCanvas = document.getElementById('confetti');
   const heartsLayer = document.getElementById('hearts');
   const subtitle = document.querySelector('.subtitle');
+  const form = document.getElementById('valentineForm');
+  const letterOverlay = document.getElementById('letterOverlay');
 
-  // Move the No button to a random place inside the card
+  // Move No button
   function moveNo() {
     const rect = card.getBoundingClientRect();
     const btnRect = no.getBoundingClientRect();
@@ -14,7 +16,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const maxX = rect.width - btnRect.width - padding;
     const maxY = rect.height - btnRect.height - padding;
     const x = Math.random()*maxX + padding;
-    const y = Math.random()*maxY + padding + 40; // shift down to clear title
+    const y = Math.random()*maxY + padding + 40;
     no.style.position = 'absolute';
     no.style.left = x + 'px';
     no.style.top = y + 'px';
@@ -25,14 +27,23 @@ document.addEventListener('DOMContentLoaded', ()=>{
   no.addEventListener('click', (e)=>{ e.preventDefault(); moveNo(); });
 
   // Confetti
-  function startConfetti(duration=4000){
+  function startConfetti(duration=5000){
     const ctx = confettiCanvas.getContext('2d');
     let W = confettiCanvas.width = window.innerWidth;
     let H = confettiCanvas.height = window.innerHeight;
     const colors = ['#ff3b6b','#ffcd5c','#fff','#ff6fa8','#ff9db6'];
     const pieces = [];
     for(let i=0;i<250;i++){
-      pieces.push({x:Math.random()*W,y:Math.random()*-H,width:Math.random()*10+6,height:Math.random()*6+4, color:colors[Math.floor(Math.random()*colors.length)], rotation:Math.random()*360, speed:Math.random()*3+2, swing:Math.random()*0.04+0.01});
+      pieces.push({
+        x:Math.random()*W,
+        y:Math.random()*-H,
+        width:Math.random()*10+6,
+        height:Math.random()*6+4,
+        color:colors[Math.floor(Math.random()*colors.length)],
+        rotation:Math.random()*360,
+        speed:Math.random()*3+2,
+        swing:Math.random()*0.04+0.01
+      });
     }
     let start = performance.now();
     function frame(now){
@@ -56,7 +67,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
 
   // Floating hearts
-  function spawnHearts(count=18){
+  function spawnHearts(count=25){
     for(let i=0;i<count;i++){
       const h = document.createElement('div');
       h.className = 'floating-heart';
@@ -75,17 +86,32 @@ document.addEventListener('DOMContentLoaded', ()=>{
   function celebrate(){
     document.body.classList.add('celebrate');
     subtitle.textContent = "She said YES! 💖";
-    yes.disabled = true; no.disabled = true;
+    yes.disabled = true;
+    no.disabled = true;
+
     startConfetti(6000);
-    spawnHearts(28);
-    // small extra animations on yes
-    yes.animate([{ transform: 'scale(1)' },{ transform:'scale(1.08)' },{ transform:'scale(1)' }],{duration:800,iterations:1});
+    spawnHearts(35);
+
+    // Send email notification
+    fetch(form.action, {
+      method: "POST",
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    });
+
+    // Show letter after small delay
+    setTimeout(()=>{
+      letterOverlay.classList.add('show');
+    }, 2500);
   }
 
-  yes.addEventListener('click', (e)=>{ e.preventDefault(); celebrate(); });
+  yes.addEventListener('click', (e)=>{
+    e.preventDefault();
+    celebrate();
+  });
 
-  // handle resize
   window.addEventListener('resize', ()=>{
-    confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight;
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
   });
 });
