@@ -28,6 +28,75 @@ body.celebrate .card{transform:scale(1.02);box-shadow:0 20px 60px rgba(0,0,0,0.3
 .floating-heart{position:absolute;width:28px;height:28px;background:radial-gradient(circle at 50% 30%, #fff8, #fff0 30%),linear-gradient(180deg,#ff5b82,#ff2f6a);transform:rotate(-45deg);border-radius:14px 14px 0 0;opacity:0.95}
 .floating-heart:before,.floating-heart:after{content:"";position:absolute;background:inherit;border-radius:50%;width:28px;height:28px}
 .floating-heart:before{top:-14px;left:0}
+/* LETTER OVERLAY */
+
+#letterOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(8px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  visibility:hidden;
+  transition:all 1s ease;
+  z-index:100;
+}
+
+#letterOverlay.show{
+  opacity:1;
+  visibility:visible;
+}
+
+.letter{
+  background:white;
+  color:#444;
+  padding:50px;
+  max-width:700px;
+  width:90%;
+  border-radius:20px;
+  box-shadow:0 30px 80px rgba(0,0,0,0.4);
+  transform:scale(0.7) translateY(40px);
+  opacity:0;
+  animation:letterAppear 1.5s forwards ease;
+}
+
+@keyframes letterAppear{
+  to{
+    transform:scale(1) translateY(0);
+    opacity:1;
+  }
+}
+
+.letter h2{
+  font-family:'Great Vibes', serif;
+  font-size:42px;
+  text-align:center;
+  margin-bottom:25px;
+  color:#ff3b6b;
+}
+
+.letter p{
+  line-height:1.8;
+  margin-bottom:18px;
+  font-size:17px;
+}
+
+.signature{
+  text-align:right;
+  margin-top:25px;
+  font-family:'Great Vibes', serif;
+  font-size:24px;
+  color:#ff3b6b;
+}
+
+.closing{
+  font-weight:600;
+  text-align:center;
+  font-size:18px;
+}
+
 .floating-heart:after{left:14px;top:0}
 
 @media (max-width:520px){.title{font-size:40px}.card{padding:28px}}
