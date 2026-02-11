@@ -251,5 +251,36 @@ body.celebrate {
 .envelope.open{
   transform: scale(1.08) rotateY(0deg);
 }
+/* Retour */
+#backBtn{
+  display:block;
+  margin:20px auto 0 auto;
+  background:linear-gradient(180deg,#ffe6f0,#fff);
+  color:#ff3b6b;
+  border:none;
+  padding:10px 20px;
+  border-radius:12px;
+  font-size:16px;
+  cursor:pointer;
+  transition:transform 200ms ease, box-shadow 200ms ease;
+}
+#backBtn:active{transform:translateY(2px);}
+
+/* Lettre 3D */
+.envelope{
+  transform-style:preserve-3d;
+  perspective:800px;
+}
+.letterPaper{
+  transform:translateY(100%) rotateX(15deg);
+  transition:1.5s ease, transform 1.5s ease;
+}
+.envelope.open .letterPaper{
+  transform:translateY(-140px) rotateX(0deg);
+}
+
+/* Petals, confetti, hearts restent identiques */
+
+/* Sparkles, heartbeat, zoom envelope restent identiques */
 
 
