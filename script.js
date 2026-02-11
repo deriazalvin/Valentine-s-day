@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const envelope = document.querySelector('.envelope');
   const typedText = document.getElementById('typedText');
   const music = document.getElementById('romanticMusic');
+  const petalsLayer = document.getElementById('petals');
 
   const message = `💌 My Everlight 💌
 
@@ -27,25 +28,41 @@ Alvin 💖`;
     }
   }
 
+  function launchPetals(count = 25){
+    for(let i=0;i<count;i++){
+      const petal = document.createElement('div');
+      petal.className='petal';
+      petal.style.left = Math.random()*100 + '%';
+      petal.style.animation = `fallPetal ${4+Math.random()*3}s linear forwards`;
+      petal.style.animationDelay = Math.random()*2+'s';
+      petalsLayer.appendChild(petal);
+      setTimeout(()=>{ petal.remove(); }, 7000);
+    }
+  }
+
   function celebrate(){
+    // Send form to Formspree
     fetch(form.action, {
       method: "POST",
       body: new FormData(form),
       headers: { 'Accept': 'application/json' }
     });
 
+    // Show envelope scene
     romanceScene.classList.add('show');
 
-    setTimeout(()=>{
-      envelope.classList.add('open');
-    },1500);
+    // Open envelope
+    setTimeout(()=> envelope.classList.add('open'), 1500);
 
-    setTimeout(()=>{
-      typeWriter(message);
-    },3000);
+    // Type letter
+    setTimeout(()=> typeWriter(message), 3000);
 
+    // Play music
     music.volume = 0.6;
-    music.play();
+    music.play().catch(err => console.log("Autoplay blocked", err));
+
+    // Launch petals
+    launchPetals(30);
   }
 
   yes.addEventListener('click',(e)=>{
