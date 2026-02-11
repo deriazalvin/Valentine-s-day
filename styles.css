@@ -100,3 +100,86 @@ body.celebrate .card{transform:scale(1.02);box-shadow:0 20px 60px rgba(0,0,0,0.3
 .floating-heart:after{left:14px;top:0}
 
 @media (max-width:520px){.title{font-size:40px}.card{padding:28px}}
+
+/* ROMANCE SCENE */
+
+#romanceScene{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.85);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  visibility:hidden;
+  transition:1s ease;
+  z-index:200;
+}
+
+#romanceScene.show{
+  opacity:1;
+  visibility:visible;
+}
+
+/* Envelope */
+
+.envelope{
+  position:relative;
+  width:320px;
+  height:200px;
+  background:#ff3b6b;
+  border-radius:6px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  transform-style:preserve-3d;
+  animation:popIn 1.5s ease forwards;
+}
+
+@keyframes popIn{
+  from{ transform:scale(0.5) rotateY(90deg); opacity:0; }
+  to{ transform:scale(1) rotateY(0); opacity:1; }
+}
+
+.flap{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:#ff5b82;
+  clip-path:polygon(0 0,100% 0,50% 60%);
+  transform-origin:top;
+  transition:1.2s ease;
+}
+
+.envelope.open .flap{
+  transform:rotateX(180deg);
+}
+
+/* Letter */
+
+.letterPaper{
+  position:absolute;
+  width:90%;
+  height:260px;
+  background:white;
+  top:20px;
+  left:5%;
+  padding:20px;
+  border-radius:10px;
+  transform:translateY(100%);
+  transition:1.5s ease;
+  overflow:auto;
+  font-size:15px;
+  line-height:1.6;
+  color:#444;
+}
+
+.envelope.open .letterPaper{
+  transform:translateY(-140px);
+}
+
+#typedText{
+  font-family:Poppins;
+  white-space:pre-wrap;
+}
+
