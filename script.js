@@ -1,117 +1,61 @@
 document.addEventListener('DOMContentLoaded', ()=>{
   const yes = document.getElementById('yesBtn');
   const no = document.getElementById('noBtn');
-  const card = document.querySelector('.card');
-  const confettiCanvas = document.getElementById('confetti');
-  const heartsLayer = document.getElementById('hearts');
-  const subtitle = document.querySelector('.subtitle');
   const form = document.getElementById('valentineForm');
-  const letterOverlay = document.getElementById('letterOverlay');
+  const romanceScene = document.getElementById('romanceScene');
+  const envelope = document.querySelector('.envelope');
+  const typedText = document.getElementById('typedText');
+  const music = document.getElementById('romanticMusic');
 
-  // Move No button
-  function moveNo() {
-    const rect = card.getBoundingClientRect();
-    const btnRect = no.getBoundingClientRect();
-    const padding = 12;
-    const maxX = rect.width - btnRect.width - padding;
-    const maxY = rect.height - btnRect.height - padding;
-    const x = Math.random()*maxX + padding;
-    const y = Math.random()*maxY + padding + 40;
-    no.style.position = 'absolute';
-    no.style.left = x + 'px';
-    no.style.top = y + 'px';
-    no.classList.add('moved');
-  }
+  const message = `💌 My Everlight 💌
 
-  no.addEventListener('mouseenter', moveNo);
-  no.addEventListener('click', (e)=>{ e.preventDefault(); moveNo(); });
+There are not enough words in this world to describe how much you mean to me. When I look at you, I see my future. When I hold you, I feel complete. ✨
 
-  // Confetti
-  function startConfetti(duration=5000){
-    const ctx = confettiCanvas.getContext('2d');
-    let W = confettiCanvas.width = window.innerWidth;
-    let H = confettiCanvas.height = window.innerHeight;
-    const colors = ['#ff3b6b','#ffcd5c','#fff','#ff6fa8','#ff9db6'];
-    const pieces = [];
-    for(let i=0;i<250;i++){
-      pieces.push({
-        x:Math.random()*W,
-        y:Math.random()*-H,
-        width:Math.random()*10+6,
-        height:Math.random()*6+4,
-        color:colors[Math.floor(Math.random()*colors.length)],
-        rotation:Math.random()*360,
-        speed:Math.random()*3+2,
-        swing:Math.random()*0.04+0.01
-      });
-    }
-    let start = performance.now();
-    function frame(now){
-      ctx.clearRect(0,0,W,H);
-      for(const p of pieces){
-        p.y += p.speed;
-        p.x += Math.sin(now*p.swing + p.x*0.001)*2;
-        p.rotation += 6;
-        ctx.save();
-        ctx.translate(p.x,p.y);
-        ctx.rotate(p.rotation*Math.PI/180);
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.width/2,-p.height/2,p.width,p.height);
-        ctx.restore();
-        if(p.y>H+50){ p.y = -20; p.x = Math.random()*W; }
-      }
-      if(now - start < duration) requestAnimationFrame(frame);
-      else ctx.clearRect(0,0,W,H);
-    }
-    requestAnimationFrame(frame);
-  }
+You are the fire in my soul 🔥, the beat in my heart ❤️, and the reason I believe in true love. Every day with you feels like a dream I never want to wake up from.
 
-  // Floating hearts
-  function spawnHearts(count=25){
-    for(let i=0;i<count;i++){
-      const h = document.createElement('div');
-      h.className = 'floating-heart';
-      h.style.left = Math.random()*100 + '%';
-      h.style.top = (80 + Math.random()*20) + '%';
-      heartsLayer.appendChild(h);
-      const dur = 4000 + Math.random()*2000;
-      h.animate([
-        { transform: 'translateY(0) scale(0.7)', opacity:1 },
-        { transform: 'translateY(-120vh) scale(1)', opacity:0 }
-      ],{duration: dur, easing:'cubic-bezier(.2,.8,.2,1)'});
-      setTimeout(()=>{ h.remove(); }, dur+100);
+On this special day, I want you to remember that my love for you grows stronger every second 💞. No matter what happens, I will always choose you.
+
+Happy Valentine’s Day to the love of my life. 💘
+
+With all my passion,
+Alvin 💖`;
+
+  function typeWriter(text, i = 0){
+    if(i < text.length){
+      typedText.innerHTML += text.charAt(i);
+      setTimeout(()=> typeWriter(text, i+1), 30);
     }
   }
 
   function celebrate(){
-    document.body.classList.add('celebrate');
-    subtitle.textContent = "She said YES! 💖";
-    yes.disabled = true;
-    no.disabled = true;
-
-    startConfetti(6000);
-    spawnHearts(35);
-
-    // Send email notification
     fetch(form.action, {
       method: "POST",
       body: new FormData(form),
       headers: { 'Accept': 'application/json' }
     });
 
-    // Show letter after small delay
+    romanceScene.classList.add('show');
+
     setTimeout(()=>{
-      letterOverlay.classList.add('show');
-    }, 2500);
+      envelope.classList.add('open');
+    },1500);
+
+    setTimeout(()=>{
+      typeWriter(message);
+    },3000);
+
+    music.volume = 0.6;
+    music.play();
   }
 
-  yes.addEventListener('click', (e)=>{
+  yes.addEventListener('click',(e)=>{
     e.preventDefault();
     celebrate();
   });
 
-  window.addEventListener('resize', ()=>{
-    confettiCanvas.width = window.innerWidth;
-    confettiCanvas.height = window.innerHeight;
+  no.addEventListener('mouseover',()=>{
+    no.style.position="absolute";
+    no.style.top=Math.random()*200+"px";
+    no.style.left=Math.random()*200+"px";
   });
 });
